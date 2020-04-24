@@ -1,0 +1,11 @@
+
+version: '3.5'
+
+services:
+
+  nhsd.public-orderform:
+    image: nhsd/buying-catalogue/orderform
+    container_name: nhsd_buyingcatalogue-orderform
+    build:
+      context: .
+      dockerfile: Dockerfile
