@@ -12,7 +12,9 @@ COPY . .
 ENV NODE_ENV=production
 
 # Converts Sass into CSS, tranpsiles the app and webpacks browser scripts
-RUN npm run build:docker
+RUN npm install
+
+
 
 # Install prod dependencies inside the dist directory
 RUN cp package.json dist && cd dist && npm install --only=prod
