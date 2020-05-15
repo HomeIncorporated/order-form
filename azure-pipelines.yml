@@ -12,8 +12,25 @@ pool:
   name: GP IT Futures AKS Build Agents
 
 jobs: 
+- job: version
+  displayName: Work out Version
+  pool:
+    name: GP IT Futures AKS Build Agents
+  steps:
+  - task: UseGitVersion@5
+    displayName: gitversion
+    inputs:
+      versionSpec: '5.x'
+  - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
+    name: setVersionStep
+  - script: echo semVer $(setVersionStep.semVer)
+    name: echovar
+
 - job: buildAndTest
+  dependsOn: version
   displayName: Build app and run tests
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   steps:
   - task: NodeTool@0
     inputs:
@@ -58,12 +75,12 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Build and push docker containers to the acr
   condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
-  dependsOn: buildAndTest
+  dependsOn: 
+    - version
+    - buildAndTest    
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   steps:
-  - task: UseGitVersion@5
-    displayName: gitversion
-    inputs:
-      versionSpec: '5.x'
   - task: DockerInstaller@0
     inputs:
       dockerVersion: '18.09.9'
