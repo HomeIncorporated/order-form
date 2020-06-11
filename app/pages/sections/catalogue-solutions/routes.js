@@ -166,5 +166,12 @@ export const catalogueSolutionsRoutes = (authProvider, addContext, sessionManage
     return res.render('pages/sections/catalogue-solutions/recipient/template.njk', addContext({ context, user: req.user, csrfToken: req.csrfToken() }));
   }));
 
+  // route
+  router.get('/:orderItemId', authProvider.authorise({ claim: 'ordering' }), withCatch(authProvider, async (req, res) => {
+    // 
+    const context = getPricingSpikeContext();
+    return res.render('pages/sections/catalogue-solutions/recipient/template.njk', addContext({ context, user: req.user, csrfToken: req.csrfToken() }));
+  }));
+
   return router;
 };

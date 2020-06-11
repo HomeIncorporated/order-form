@@ -1,0 +1,24 @@
+{
+  "quantityFieldTitle": "Quantity",
+  "quantityFieldExpandable": {
+    "title": "Which one",
+    "innerComponent": "Some text to explain which one to select"
+  },
+  "showEstimationPeriod": false,
+  "columnInfo": [
+    { "data": "Price (£)" },
+    { "data": "Unit of order" }
+  ],
+  "data": [
+    [
+      { "data": "data"},
+      {
+        "expandableSection" : {
+          "title": ""
+          },
+        "data": "data"
+      }
+    ]
+  ],
+  "columnClass": "nhsuk-grid-column-one-half"
+}
