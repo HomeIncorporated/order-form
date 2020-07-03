@@ -3,6 +3,7 @@ import { getData } from 'buying-catalogue-library';
 import { getContext, getErrorContext } from './contextCreator';
 import { logger } from '../../../../logger';
 import { getEndpoint } from '../../../../endpoints';
+import { getDateErrors } from './getDateErrors';
 
 export const getRecipientName = async ({ selectedRecipientId, accessToken }) => {
   const endpoint = getEndpoint({ api: 'oapi', endpointLocator: 'getServiceRecipient', options: { selectedRecipientId } });
@@ -58,10 +59,12 @@ export const validateOrderItemForm = ({ data }) => {
     });
   }
 
-  if (errors.length === 0) {
-    return { success: true };
+  errors.push(getDateErrors(data, 'plannedDelivery'));
+
+  if (errors[0]) {
+    return { success: false, errors };
   }
-  return { success: false, errors };
+  return { success: true };
 };
 
 export const getSolution = async ({ solutionId, accessToken }) => {

@@ -48,7 +48,18 @@ const addErrorsToTableQuestions = ({ updatedManifest, validationErrors }) => {
   if (foundError) {
     const errorMessage = updatedManifest.errorMessages[foundError.id];
     manifestWithErrors.addPriceTable.data[0][0].question.error = { message: errorMessage };
+  } else {
+    delete manifestWithErrors.addPriceTable.data[0][0].question.error;
   }
+
+  return manifestWithErrors;
+};
+
+export const addDateErrorsToManifest = ({ validationErrors, updatedManifest }) => {
+  const errorMessage = updatedManifest.errorMessages.PlannedDeliveryDateRequired;
+  const questionError = { message: errorMessage, fields: (validationErrors.find(error => error.field === 'PlannedDeliveryDate') || {}).part || ['day', 'month', 'year'] };
+  const manifestWithErrors = { ...updatedManifest };
+  questionExtractor('plannedDeliveryDate', manifestWithErrors).error = questionError;
 
   return manifestWithErrors;
 };
@@ -64,6 +75,15 @@ export const getErrorContext = async (params) => {
   });
 
   updatedManifest = getSectionErrorContext({ ...params, manifest: updatedManifest });
+
+  if (params.validationErrors.includes('PlannedDeliveryDate')) {
+    const formattedDate = [params.data['plannedDeliveryDate-day'], params.data['plannedDeliveryDate-month'], params.data['plannedDeliveryDate-year']];
+    const [day, month, year] = formattedDate;
+    questionExtractor('plannedDeliveryDate', updatedManifest).data = { day, month, year };
+    updatedManifest = addDateErrorsToManifest({
+      validationErrors: params.validationErrors, updatedManifest,
+    });
+  }
 
   return {
     ...addErrorsToTableQuestions({ ...params, updatedManifest }),

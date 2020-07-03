@@ -73,7 +73,15 @@
     "quantityRequired": "Enter a quantity",
     "numericQuantityRequired": "Quantity must be a number",
     "priceRequired": "Enter a price",
-    "numericPriceRequired": "Price must be a number"
+    "numericPriceRequired": "Price must be a number",
+    "PlannedDeliveryDateRequired": "Enter a planned delivery date",
+    "PlannedDeliveryDateInvalid": "Enter a planned delivery date in a valid format",
+    "PlannedDeliveryDateGreaterThan": "Planned delivery date must be in the future or within the last 60 days",
+    "PlannedDeliveryDateNotReal": "Planned delivery date must be a real date",
+    "PlannedDeliveryDateDayRequired": "Planned delivery date must include a day",
+    "PlannedDeliveryDateMonthRequired": "Planned delivery date must include a month",
+    "PlannedDeliveryDateYearRequired": "Planned delivery date must include a year",
+    "PlannedDeliveryDateYearLength": "Year must be four numbers"
   },
   "deleteButtonText": "Delete",
   "saveButtonText": "Save"

@@ -5,11 +5,15 @@ import {
   getRecipientName, getSelectedPrice, getOrderItemContext, validateOrderItemForm,
 } from './controller';
 import * as contextCreator from './contextCreator';
+import * as dateValidator from './getDateErrors';
 
 jest.mock('buying-catalogue-library');
 
 jest.mock('./contextCreator', () => ({
   getContext: jest.fn(),
+}));
+jest.mock('./getDateErrors', () => ({
+  getDateErrors: jest.fn(),
 }));
 
 const selectedPrice = {
@@ -22,6 +26,12 @@ const selectedPrice = {
     description: 'per consultation',
   },
   price: 0.1,
+};
+
+const mockDataError = {
+  field: 'PlannedDeliveryDate',
+  part: ['day'],
+  id: 'PlannedDeliveryDayRequired',
 };
 
 describe('catalogue-solutions order-item controller', () => {
@@ -88,6 +98,8 @@ describe('catalogue-solutions order-item controller', () => {
   describe('validateOrderItemForm', () => {
     describe('when there are no validation errors', () => {
       it('should return success as true', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
         const data = {
           quantity: '1',
           price: '1',
@@ -100,6 +112,10 @@ describe('catalogue-solutions order-item controller', () => {
     });
 
     describe('when there are validation errors', () => {
+      afterEach(() => {
+        dateValidator.getDateErrors.mockReset();
+      });
+
       const quantityRequired = {
         field: 'quantity',
         id: 'quantityRequired',
@@ -118,6 +134,8 @@ describe('catalogue-solutions order-item controller', () => {
       };
 
       it('should return an array of one validation error and success as false if empty string for quantity is passed in', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
         const data = {
           quantity: '',
           price: '1.5',
@@ -126,10 +144,12 @@ describe('catalogue-solutions order-item controller', () => {
         const response = validateOrderItemForm({ data });
 
         expect(response.success).toEqual(false);
-        expect(response.errors).toEqual([quantityRequired]);
+        expect(response.errors).toEqual([quantityRequired, null]);
       });
 
       it('should return an array of one validation error and success as false if quantity is not a number', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
         const data = {
           quantity: 'not a number',
           price: '1.5',
@@ -138,10 +158,13 @@ describe('catalogue-solutions order-item controller', () => {
         const response = validateOrderItemForm({ data });
 
         expect(response.success).toEqual(false);
-        expect(response.errors).toEqual([numericalQuantity]);
+        expect(response.errors).toEqual([numericalQuantity, null]);
       });
 
       it('should return an array of one validation error and success as false if empty string for price is passed in', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
+
         const data = {
           quantity: '1',
           price: '',
@@ -150,10 +173,13 @@ describe('catalogue-solutions order-item controller', () => {
         const response = validateOrderItemForm({ data });
 
         expect(response.success).toEqual(false);
-        expect(response.errors).toEqual([priceRequired]);
+        expect(response.errors).toEqual([priceRequired, null]);
       });
 
       it('should return an array of one validation error and success as false if empty string for price is passed in', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
+
         const data = {
           quantity: '1',
           price: 'not a number',
@@ -162,16 +188,19 @@ describe('catalogue-solutions order-item controller', () => {
         const response = validateOrderItemForm({ data });
 
         expect(response.success).toEqual(false);
-        expect(response.errors).toEqual([numericalPrice]);
+        expect(response.errors).toEqual([numericalPrice, null]);
       });
 
       it('should return a validation error if all values are undefined', () => {
+        dateValidator.getDateErrors
+          .mockReturnValueOnce(null);
+
         const data = {};
 
         const response = validateOrderItemForm({ data });
 
         expect(response.errors).toEqual(
-          [quantityRequired, priceRequired],
+          [quantityRequired, priceRequired, null],
         );
       });
     });

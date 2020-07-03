@@ -51,14 +51,32 @@ export const catalogueSolutionsRoutes = (authProvider, addContext, sessionManage
     const selectedSolutionId = sessionManager.getFromSession({ req, key: 'selectedSolutionId' });
     const selectedRecipientId = sessionManager.getFromSession({ req, key: 'selectedRecipientId' });
 
-    const solutionName = (await getSolution({ solutionId: selectedSolutionId, accessToken })).name;
+    // const solutionName = (await getSolution({ solutionId: selectedSolutionId, accessToken })).name;
+    const solutionName = 'name';
     sessionManager.saveToSession({ req, key: 'solutionName', value: solutionName });
 
-    const serviceRecipientName = await getRecipientName({ selectedRecipientId, accessToken });
+    // const serviceRecipientName = await getRecipientName({ selectedRecipientId, accessToken });
+    const serviceRecipientName = 'recipient';
     sessionManager.saveToSession({ req, key: 'serviceRecipientName', value: serviceRecipientName });
 
     const selectedPriceId = sessionManager.getFromSession({ req, key: 'selectedPriceId' });
-    const selectedPrice = await getSelectedPrice({ selectedPriceId, accessToken });
+    // const selectedPrice = await getSelectedPrice({ selectedPriceId, accessToken });
+    const selectedPrice = {
+      priceId: 2,
+      provisioningType: 'Patient',
+      type: 'flat',
+      currencyCode: 'GBP',
+      itemUnit: {
+        name: 'patient',
+        description: 'per patient',
+      },
+      timeUnit: {
+        name: 'year',
+        description: 'per year',
+      },
+      price: 0.1,
+
+    };
     sessionManager.saveToSession({ req, key: 'selectedPrice', value: selectedPrice });
 
     const context = await getOrderItemContext({
